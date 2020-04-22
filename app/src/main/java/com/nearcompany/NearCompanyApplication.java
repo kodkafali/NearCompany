@@ -1,4 +1,4 @@
-package nearcompany.com.nearcompany;
+package com.nearcompany;
 
 /**
  * Created by Emre on 4/19/2020.
@@ -12,6 +12,6 @@ public class NearCompanyApplication {
     }
 
     public static NearCompanyApplication getInstance() {
-        return instance;
+        return NearCompanyApplication.instance;
     }
 }

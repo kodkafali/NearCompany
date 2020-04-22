@@ -1,9 +1,10 @@
-package nearcompany.com.nearcompany.ui;
+package com.nearcompany.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import nearcompany.com.nearcompany.R;
+import com.nearcompany.R;
+import com.nearcompany.utility.Utility;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,5 +12,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Utility utility = Utility.getInstance(this);
+
+        utility.generateHashkey();
     }
 }
