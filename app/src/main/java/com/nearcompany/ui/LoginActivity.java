@@ -1,48 +1,56 @@
-package nearcompany.com.nearcompany.ui;
+package com.nearcompany.ui;
 
+import android.R.integer;
+import android.R.layout;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
+import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.Profile;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+
+import com.nearcompany.R;
+import com.nearcompany.R.id;
+import com.nearcompany.R.string;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import nearcompany.com.nearcompany.R;
-
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
+    private static final String[] DUMMY_CREDENTIALS = {
             "foo@example.com:hello", "bar@example.com:world"
     };
 
-    private UserLoginTask mAuthTask = null;
+    private LoginActivity.UserLoginTask mAuthTask;
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -52,61 +60,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        this.setContentView(R.layout.activity_login);
 
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        this.mEmailView = this.findViewById(id.email);
+        this.populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        this.mPasswordView = this.findViewById(id.password);
+        this.mPasswordView.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    LoginActivity.this.attemptLogin();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mEmailSignInButton = this.findViewById(id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                LoginActivity.this.attemptLogin();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        this.mLoginFormView = this.findViewById(id.login_form);
+        this.mProgressView = this.findViewById(id.login_progress);
     }
 
     private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
+        if (!this.mayRequestContacts()) {
             return;
         }
 
-        getLoaderManager().initLoader(0, null, this);
+        this.getLoaderManager().initLoader(0, null, this);
     }
 
     private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (VERSION.SDK_INT < VERSION_CODES.M) {
             return true;
         }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+        if (this.checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+        if (this.shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            Snackbar.make(this.mEmailView, string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
-                        @TargetApi(Build.VERSION_CODES.M)
+                        @TargetApi(VERSION_CODES.M)
                         public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                            LoginActivity.this.requestPermissions(new String[]{READ_CONTACTS}, LoginActivity.REQUEST_READ_CONTACTS);
                         }
                     });
         } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+            this.requestPermissions(new String[]{READ_CONTACTS}, LoginActivity.REQUEST_READ_CONTACTS);
         }
         return false;
     }
@@ -114,49 +122,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
+        if (requestCode == LoginActivity.REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+                this.populateAutoComplete();
             }
         }
     }
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (this.mAuthTask != null) {
             return;
         }
 
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        this.mEmailView.setError(null);
+        this.mPasswordView.setError(null);
 
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        String email = this.mEmailView.getText().toString();
+        String password = this.mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+        if (!TextUtils.isEmpty(password) && !this.isPasswordValid(password)) {
+            this.mPasswordView.setError(this.getString(string.error_invalid_password));
+            focusView = this.mPasswordView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            this.mEmailView.setError(this.getString(string.error_field_required));
+            focusView = this.mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+        } else if (!this.isEmailValid(email)) {
+            this.mEmailView.setError(this.getString(string.error_invalid_email));
+            focusView = this.mEmailView;
             cancel = true;
         }
 
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            this.showProgress(true);
+            this.mAuthTask = new LoginActivity.UserLoginTask(email, password);
+            this.mAuthTask.execute((Void) null);
         }
     }
 
@@ -168,39 +176,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return password.length() > 4;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    @TargetApi(VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = this.getResources().getInteger(integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            this.mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            this.mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    LoginActivity.this.mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            this.mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            this.mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    LoginActivity.this.mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            this.mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            this.mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
+                Uri.withAppendedPath(Profile.CONTENT_URI,
+                        Contacts.Data.CONTENT_DIRECTORY), LoginActivity.ProfileQuery.PROJECTION,
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email
                 .CONTENT_ITEM_TYPE},
@@ -212,11 +220,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            emails.add(cursor.getString(LoginActivity.ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
 
-        addEmailsToAutoComplete(emails);
+        this.addEmailsToAutoComplete(emails);
     }
 
     @Override
@@ -226,17 +234,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+                new ArrayAdapter<>(this,
+                        layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        this.mEmailView.setAdapter(adapter);
     }
 
 
     private interface ProfileQuery {
         String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+                CommonDataKinds.Email.ADDRESS,
+                CommonDataKinds.Email.IS_PRIMARY,
         };
 
         int ADDRESS = 0;
@@ -249,8 +257,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mPassword;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
+            this.mEmail = email;
+            this.mPassword = password;
         }
 
         @Override
@@ -262,32 +270,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
+            for (String credential : LoginActivity.DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    return pieces[1].equals(mPassword);
+                if (pieces[0].equals(this.mEmail)) {
+                    return pieces[1].equals(this.mPassword);
                 }
             }
             return true;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
+        protected void onPostExecute(Boolean success) {
+            LoginActivity.this.mAuthTask = null;
+            LoginActivity.this.showProgress(false);
 
             if (success) {
-                finish();
+                LoginActivity.this.finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                LoginActivity.this.mPasswordView.setError(LoginActivity.this.getString(string.error_incorrect_password));
+                LoginActivity.this.mPasswordView.requestFocus();
             }
         }
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+            LoginActivity.this.mAuthTask = null;
+            LoginActivity.this.showProgress(false);
         }
     }
 }

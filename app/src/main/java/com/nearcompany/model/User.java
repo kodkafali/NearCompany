@@ -1,6 +1,4 @@
-package nearcompany.com.nearcompany.model;
-
-import android.content.Intent;
+package com.nearcompany.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -13,7 +11,7 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    public Intent id;
+    public Integer id;
 
     @SerializedName("name")
     @Expose

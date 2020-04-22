@@ -1,4 +1,4 @@
-package nearcompany.com.nearcompany;
+package com.nearcompany;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
