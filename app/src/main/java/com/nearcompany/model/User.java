@@ -11,7 +11,7 @@ public class User {
 
     @SerializedName("id")
     @Expose
-    public Integer id;
+    public String id;
 
     @SerializedName("name")
     @Expose
@@ -21,4 +21,15 @@ public class User {
     @Expose
     public String surname;
 
+    @SerializedName("email")
+    @Expose
+    public String email;
+
+    @SerializedName("token")
+    @Expose
+    public String token;
+
+    @SerializedName("usrImage")
+    @Expose
+    public String usrImage;
 }
