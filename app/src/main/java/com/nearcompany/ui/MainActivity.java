@@ -1,6 +1,5 @@
 package com.nearcompany.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,7 +16,5 @@ public class MainActivity extends AppCompatActivity {
         Utility utility = Utility.getInstance(this);
 
         utility.generateHashkey();
-
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 }

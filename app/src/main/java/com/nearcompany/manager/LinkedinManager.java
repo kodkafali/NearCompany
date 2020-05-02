@@ -1,4 +1,4 @@
-package com.nearcompany.linkedin;
+package com.nearcompany.manager;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -44,7 +44,6 @@ public class LinkedinManager {
     }
 
     public void linkedInRequestForAccessToken(String linkedinCode) {
-
         new AsyncTaskRunnerLinkedIn(linkedinCode).execute();
     }
 
@@ -91,7 +90,6 @@ public class LinkedinManager {
             } else {
                 System.out.println("GET request not worked");
             }
-
 
         } catch (Exception e) {
             e.getStackTrace();
@@ -192,4 +190,5 @@ public class LinkedinManager {
             return data;
         }
     }
+
 }
