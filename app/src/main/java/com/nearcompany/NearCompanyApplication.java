@@ -1,6 +1,9 @@
 package com.nearcompany;
 
+import com.nearcompany.model.Company;
 import com.nearcompany.model.User;
+
+import java.util.List;
 
 /**
  * Created by Emre on 4/19/2020.
@@ -9,7 +12,10 @@ import com.nearcompany.model.User;
 public class NearCompanyApplication {
 
     private static final NearCompanyApplication instance = new NearCompanyApplication();
+
     private User mUser;
+
+    private List<Company> mCompanies;
 
     private NearCompanyApplication() {
     }
@@ -24,5 +30,13 @@ public class NearCompanyApplication {
 
     public void setUser(User user) {
         this.mUser = user;
+    }
+
+    public List<Company> getCompanies() {
+        return mCompanies;
+    }
+
+    public void setCompanies(List<Company> pCompanies) {
+        this.mCompanies = pCompanies;
     }
 }
