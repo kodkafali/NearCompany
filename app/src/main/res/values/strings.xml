@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NearCompany</string>
+    <string name="app_name">NearCompany Admin Panel</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->

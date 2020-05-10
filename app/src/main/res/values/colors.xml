@@ -7,4 +7,7 @@
     <color name="black_overlay">#66000000</color>
 
     <color name="search_background">#66EDDFDF</color>
+
+    <color name="viewBg">#f1f5f8</color>
+    <color name="album_title">#4c4c4c</color>
 </resources>
